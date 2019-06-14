@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'brand_page.dart';
+import 'package:adino/product.dart';
 
 class SizePage extends StatefulWidget {
   @override
@@ -25,36 +26,42 @@ class _SizePageState extends State<SizePage> {
           ListTile(
             title: Text("XS"),
             onTap: (){
+              product.size = "xs";
               Navigator.push(context, MaterialPageRoute(builder: (ctx)=>Brand()));
             },
           ),
           ListTile(
             title: Text("S"),
             onTap: (){
+              product.size = "s";
               Navigator.push(context, MaterialPageRoute(builder: (ctx)=>Brand()));
             },
           ),
           ListTile(
             title: Text("M"),
             onTap: (){
+              product.size = "m";
               Navigator.push(context, MaterialPageRoute(builder: (ctx)=>Brand()));
             },
           ),
           ListTile(
             title: Text("L"),
             onTap: (){
+              product.size = "l";
               Navigator.push(context, MaterialPageRoute(builder: (ctx)=>Brand()));
             },
           ),
           ListTile(
             title: Text("XL"),
             onTap: (){
+              product.size = "xl";
               Navigator.push(context, MaterialPageRoute(builder: (ctx)=>Brand()));
             },
           ),
           ListTile(
             title: Text("XXL"),
             onTap: (){
+              product.size = "xxl";
               Navigator.push(context, MaterialPageRoute(builder: (ctx)=>Brand()));
             },
           ),

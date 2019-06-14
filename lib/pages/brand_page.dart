@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'preferences_page.dart';
+import 'package:adino/product.dart';
+import 'add_image_page.dart';
 
 class Brand extends StatefulWidget {
   @override
@@ -14,23 +16,31 @@ class _BrandState extends State<Brand> {
     setState(() {
       switch (e) {
         case 1: groupValue = 1;
+        product.condition = "New";
         break;
         case 2: groupValue = 2;
+        product.condition = "Good";
         break; 
         case 3: groupValue = 3;
+        product.condition = "Fairly used";
         break;
         case 4: groupValue = 4;
+        product.condition = "Very used";
         break;
         default:
       }
     }); 
+
+    
   }
+
+  final brandController = TextEditingController(); 
+  final descController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Type brand")),
-      
       body: ListView(
         children: <Widget>[
           Container(
@@ -49,6 +59,7 @@ class _BrandState extends State<Brand> {
                 TextFormField(
                   autofocus: false,
                   keyboardType: TextInputType.text,
+                  controller: brandController,
                   maxLines: null,
                   decoration: InputDecoration(
                     enabledBorder: const OutlineInputBorder(
@@ -81,6 +92,7 @@ class _BrandState extends State<Brand> {
                 TextFormField(
                   autofocus: false,
                   keyboardType: TextInputType.text,
+                  controller: descController,
                   maxLines: null,
                   maxLength: 150,
                   decoration: InputDecoration(
@@ -208,7 +220,9 @@ class _BrandState extends State<Brand> {
             ),
             child: FlatButton(
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (ctx)=>PreferencesPage()));
+                product.brand = brandController.text;
+                product.description = descController.text;
+                Navigator.push(context, MaterialPageRoute(builder: (ctx)=>AddImagePage()));
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

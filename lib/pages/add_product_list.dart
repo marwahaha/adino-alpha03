@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'size_page.dart';
+import '../product.dart';
 
 void main() => runApp(MaterialApp(home: AddProductList(), debugShowCheckedModeBanner: false,),);
 
@@ -36,6 +37,7 @@ class _AddProductListState extends State<AddProductList> {
           child: ListTile(
             title: Text("Female", textAlign: TextAlign.center,),
             onTap: (){
+              product.gender = "female";
               Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryListM()));  
             },
           ),
@@ -50,6 +52,7 @@ class _AddProductListState extends State<AddProductList> {
           child: ListTile(
             title: Text("Male", textAlign: TextAlign.center,),
             onTap: (){
+              product.gender = "male";
               Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryListM()));  
             },
           ),
@@ -359,6 +362,7 @@ Widget subCategory(title, context){
     child: ListTile(
       title: Text(title,textAlign: TextAlign.center,),
       onTap: (){
+        product.category = title;
         Navigator.push(context, MaterialPageRoute(builder: (context) => SizePage()));
       },
     ),

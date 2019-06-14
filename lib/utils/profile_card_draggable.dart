@@ -5,9 +5,11 @@ class ProfileCardDraggable extends StatelessWidget
   final int cardNum;
   String category;
   String description;
+  String owner;
   String imageUrl;
+  
 
-  ProfileCardDraggable(this.cardNum, this.category, this.description, this.imageUrl);
+  ProfileCardDraggable(this.cardNum, this.category, this.description, this.owner, this.imageUrl);
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,11 @@ class ProfileCardDraggable extends StatelessWidget
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: Image.network((imageUrl != null) ? imageUrl
-              :"https://carepharmaceuticals.com.au/wp-content/uploads/sites/19/2018/02/placeholder-600x400.png", fit: BoxFit.cover),
+            child: SizedBox.expand(
+              child: Image.network((imageUrl != null) ? imageUrl
+              :"https://carepharmaceuticals.com.au/wp-content/uploads/sites/19/2018/02/placeholder-600x400.png", fit: BoxFit.fitWidth
+              ),
+            ) 
           ),
           Container(
             decoration: BoxDecoration(

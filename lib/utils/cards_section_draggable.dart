@@ -3,67 +3,114 @@ import 'profile_card_draggable.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
 
 class CardsSectionDraggable extends StatefulWidget{
+
+  CardsSectionDraggable();
+
   @override
   _CardsSectionState createState() =>  _CardsSectionState();
 }
 
-class _CardsSectionState extends State<CardsSectionDraggable>
-{
+class _CardsSectionState extends State<CardsSectionDraggable>{
+  
+  _CardsSectionState();
+  
   bool dragOverTarget = false;
  
-  List<ProfileCardDraggable> cards =  List();
-  int cardsCounter = 0;
+  List<ProfileCardDraggable> cards = List();
   int showCounter = 0;
+  int cardsCounter = 0;
   String category;
   String description;
   String imageUrl;
+  String owner;
 
-  _CardsSectionState(){
-    
-  }
+
 
   @override
   void initState(){
+
+    
     super.initState();
-
+    
     for (cardsCounter = 0; cardsCounter <= 1; cardsCounter++){
-      cards.add(ProfileCardDraggable(cardsCounter, "a", "b", null));
+      cards.add(ProfileCardDraggable(cardsCounter, "a", "b", "testOwner", null));
     }
-    print(cardsCounter);
 
-    Firestore.instance
-    .collection('products')
-    .snapshots()
+    Firestore.instance.collection('products').snapshots()
     .listen((data) =>
       data.documents.forEach((doc){
-        print(doc["category"] + " " + doc["description"]);
         category = doc["category"];
         description = doc["description"];
         imageUrl = doc["imageUrl"];
-        cards.add(ProfileCardDraggable(cardsCounter, category, description, imageUrl));
+        owner = doc["owner"];
+        cards.add(ProfileCardDraggable(cardsCounter, category, description, owner, imageUrl));
+        cards.toSet().toList();
         cardsCounter++;
-        print("HERE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: " + cardsCounter.toString());
+        print("Cards length: " + cards.length.toString());
       })
     );
+
+    
   }
+
+
+// StreamBuilder<QuerySnapshot> _retrieveProducts() {
+  
+//     return StreamBuilder<QuerySnapshot>(
+//     // Interacts with Firestore (not CloudFunction)
+//     stream: Firestore.instance.collection('products').snapshots(),
+//     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//       print("im called1");
+//       if (!snapshot.hasData || snapshot.data == null) {
+//         print("retrieve users do not have data.");
+//         return Container(
+//           child: Text("No data"),
+//         );
+//       }
+//       print("im called2");
+//       var docs = snapshot.data.documents;
+      
+//       // This ListView widget consists of a list of tiles 
+//       // each represents a user.
+
+//       for(var x = 0; x < snapshot.data.documents.length; x++ ){
+//         cards.add(ProfileCardDraggable(x, docs[x]["category"], docs[x]["brand"], imageUrl));
+//         cardsCounter++;
+//         print(snapshot.data.documents[x]["brand"]);
+//         print("x:" + x.toString());
+        
+//       }
+
+      
+//       return Container(width: 0.0, height: 0.0);
+//     }
+//   );
+ 
+  
+  
+// }
+  
+  
 
   @override
   Widget build(BuildContext context){
     return Expanded(
       child: Stack(
         children: <Widget>[
+          
           // Drag target row
           Row( 
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              dragTarget(),
+              dragTargetLeft(),
               Flexible(
                 flex: 2,
                 child: Container(
                   color: Colors.grey.shade200,
+                  
                 )
               ),
-              dragTarget()
+              dragTargetRight()
             ],
           ),
           Align(
@@ -72,7 +119,7 @@ class _CardsSectionState extends State<CardsSectionDraggable>
               child: cards[((showCounter + 1) < cardsCounter?(showCounter+1):showCounter)],
             )),
           ),
-          // Front card
+          
           Align(
             //alignment:  Alignment(0.0, 0.0),
             child:  Draggable(
@@ -87,6 +134,26 @@ class _CardsSectionState extends State<CardsSectionDraggable>
               childWhenDragging:  Container(),
             ),
           ),
+          Align(
+            alignment: Alignment(0.3, 0.849),
+            child: Container(
+              height: 50,
+              width: 50,
+              child: MaterialButton(
+                child:  Icon(
+                    Icons.cached,
+                    color: Colors.black,
+                    size: 30.0,
+                  ),
+                onPressed: (){
+                  setState(() {
+                    showCounter = 0;  
+                  });
+                },
+              ),
+            ),
+          ),
+          
         ],
       )
     );
@@ -102,7 +169,7 @@ class _CardsSectionState extends State<CardsSectionDraggable>
     });
   }
 
-  Widget dragTarget(){
+  Widget dragTargetLeft(){
     return  Flexible(
       flex: 1,
       child:  DragTarget(
@@ -116,6 +183,30 @@ class _CardsSectionState extends State<CardsSectionDraggable>
         onAccept: (_){
           changeCardsOrder();
           print(cardsCounter.toString() + " cards counter");
+          print("left");
+          setState(() => dragOverTarget = false);
+        },
+        onLeave: (_) => setState(() => dragOverTarget = false)
+      ),
+    );
+  }
+  Widget dragTargetRight(){
+    return  Flexible(
+      flex: 1,
+      child:  DragTarget(
+        builder: (_, __, ___){
+          return  Container(color: Colors.grey.shade200,);
+        },
+        onWillAccept: (_){
+          setState(() => dragOverTarget = true);
+          return true;
+        },
+        onAccept: (_){
+          changeCardsOrder();
+          print(cardsCounter.toString() + " cards counter");
+                    print("right");
+          print(cards[showCounter].owner);
+
           setState(() => dragOverTarget = false);
         },
         onLeave: (_) => setState(() => dragOverTarget = false)

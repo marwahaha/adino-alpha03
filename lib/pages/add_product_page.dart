@@ -247,9 +247,11 @@ class _AddProductPageState extends State<AddProductPage> {
                             padding: EdgeInsets.all(5.0),
                             child: RawMaterialButton(
                               onPressed: getImage,
-                              child: Icon(Icons.add_a_photo,
-                              color: Colors.black,
-                              size: 30),
+                              child: Icon(
+                                Icons.add_a_photo,
+                                color: Colors.black,
+                                size: 30
+                              ),
                             ),
                           )    
                         ],

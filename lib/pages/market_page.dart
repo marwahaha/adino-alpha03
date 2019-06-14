@@ -1,3 +1,4 @@
+import 'package:adino/user.dart';
 import "package:flutter/material.dart";
 import '../utils/cards_section_draggable.dart';
 import 'add_product_page.dart';
@@ -6,12 +7,16 @@ import 'add_product_list.dart';
 import '../utils/tab_controller.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adino/product.dart';
+import 'expPage.dart';
 
 
 class MarketPage extends StatefulWidget {
   final Widget child;
   GoogleSignInAccount user;
   GoogleSignIn googleSignIn;
+
+  
   
   MarketPage({Key key, this.child, this.user, this.googleSignIn}) : super(key: key);
 
@@ -20,9 +25,16 @@ class MarketPage extends StatefulWidget {
 
 class _MarketPageState extends State<MarketPage> {
 
+  int showCounter = 0;
+  CardsSectionDraggable cardSection = new CardsSectionDraggable();
+
   Firestore db = Firestore.instance;
   _MarketPageState(this.user, this.googleSignIn){
     print(googleSignIn);
+    product.owner = user.id;
+    
+    appUser.user = user;
+    appUser.googleSignIn = googleSignIn;
   }
   GoogleSignInAccount user;
   GoogleSignIn googleSignIn;
@@ -109,7 +121,7 @@ class _MarketPageState extends State<MarketPage> {
               onPressed: (){},
             ),
           ),
-          CardsSectionDraggable(),
+          cardSection,
           Container(
             color: Colors.grey.shade200,
             height: 75,
@@ -117,10 +129,12 @@ class _MarketPageState extends State<MarketPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 RawMaterialButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    
+                  },
                   child:  Icon(
                     Icons.cached,
-                    color: Colors.black,
+                    color: Colors.grey[300],
                     size: 30.0,
                   ),
                 ),
@@ -137,6 +151,12 @@ class _MarketPageState extends State<MarketPage> {
                   shape:  CircleBorder(),
                   padding: const EdgeInsets.all(0.0)
                 ),
+                // MaterialButton(
+                //   onPressed: () {
+                //     Navigator.push(context, MaterialPageRoute(builder: (context) => ExpPage()));
+                //   },
+                //   child: Text("ExpPage"),
+                // ),
                 RawMaterialButton(
                   onPressed: () {
                     Scaffold.of(context).showSnackBar(

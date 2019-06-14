@@ -1,4 +1,6 @@
+import 'package:adino/product.dart';
 import 'package:flutter/material.dart';
+
 
 class PreferencesPage extends StatefulWidget {
   @override
@@ -11,6 +13,17 @@ class _PreferencesPageState extends State<PreferencesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Preferences"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            MaterialButton(
+              onPressed: () => {},
+              child: Text("Click me"),
+            )
+          ],
+        ),
       ),
     );
   }
