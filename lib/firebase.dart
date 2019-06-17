@@ -23,6 +23,7 @@ class Firebase {
   bool uploadData() {
     db.collection("products").document().setData({
       "owner": product.owner,
+      "ownerName": product.ownerName,
       "gender": product.gender,
       "category": product.category,
       "size": product.size,

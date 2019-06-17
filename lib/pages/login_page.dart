@@ -124,7 +124,8 @@ class _LoginPageState extends State<LoginPage> {
             print("USER ALREADY EXIST");
           } else {
             db.collection("users").document("${_currentUser.id}").setData({
-              "name": _currentUser.displayName
+              "name": _currentUser.displayName,
+              "matching": []
             });
           }
         }); 

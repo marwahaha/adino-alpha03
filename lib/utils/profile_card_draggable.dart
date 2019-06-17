@@ -6,10 +6,11 @@ class ProfileCardDraggable extends StatelessWidget
   String category;
   String description;
   String owner;
+  String ownerName;
   String imageUrl;
   
 
-  ProfileCardDraggable(this.cardNum, this.category, this.description, this.owner, this.imageUrl);
+  ProfileCardDraggable(this.cardNum, this.category, this.description, this.owner, this.ownerName, this.imageUrl);
 
   @override
   Widget build(BuildContext context) {

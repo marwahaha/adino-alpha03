@@ -1,6 +1,8 @@
+import 'package:adino/user.dart';
 import 'package:flutter/material.dart';
 import 'profile_card_draggable.dart';
 import "package:cloud_firestore/cloud_firestore.dart";
+import 'package:adino/firebase.dart';
 
 class CardsSectionDraggable extends StatefulWidget{
 
@@ -23,7 +25,8 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
   String description;
   String imageUrl;
   String owner;
-
+  String ownerName;
+  
 
 
   @override
@@ -33,7 +36,7 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
     super.initState();
     
     for (cardsCounter = 0; cardsCounter <= 1; cardsCounter++){
-      cards.add(ProfileCardDraggable(cardsCounter, "a", "b", "testOwner", null));
+      cards.add(ProfileCardDraggable(cardsCounter, "a", "b", "testOwner", "testOwnerName", null));
     }
 
     Firestore.instance.collection('products').snapshots()
@@ -43,7 +46,8 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
         description = doc["description"];
         imageUrl = doc["imageUrl"];
         owner = doc["owner"];
-        cards.add(ProfileCardDraggable(cardsCounter, category, description, owner, imageUrl));
+        ownerName = doc["ownerName"];
+        cards.add(ProfileCardDraggable(cardsCounter, category, description, owner, ownerName, imageUrl));
         cards.toSet().toList();
         cardsCounter++;
         print("Cards length: " + cards.length.toString());
@@ -184,6 +188,7 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
           changeCardsOrder();
           print(cardsCounter.toString() + " cards counter");
           print("left");
+          print(cards[showCounter].ownerName);
           setState(() => dragOverTarget = false);
         },
         onLeave: (_) => setState(() => dragOverTarget = false)
@@ -206,7 +211,15 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
           print(cardsCounter.toString() + " cards counter");
                     print("right");
           print(cards[showCounter].owner);
-
+          // firebase.db.collection("users").document(appUser.user.id).updateData({
+          //     "matching": FieldValue.arrayUnion([cards[showCounter].owner])
+          //   }
+          // );
+          firebase.db.collection("users").document(appUser.user.id).collection("matching").add({
+            "id": cards[showCounter].owner,
+            "name": cards[showCounter].ownerName
+            }
+          );
           setState(() => dragOverTarget = false);
         },
         onLeave: (_) => setState(() => dragOverTarget = false)

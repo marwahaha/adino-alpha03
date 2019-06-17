@@ -32,6 +32,7 @@ class _MarketPageState extends State<MarketPage> {
   _MarketPageState(this.user, this.googleSignIn){
     print(googleSignIn);
     product.owner = user.id;
+    product.ownerName = user.displayName;
     
     appUser.user = user;
     appUser.googleSignIn = googleSignIn;

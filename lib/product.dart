@@ -3,6 +3,7 @@ import 'dart:io';
 class Product {
 
   String owner;
+  String ownerName;
 
   String gender;
   String category;
