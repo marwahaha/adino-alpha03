@@ -9,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:adino/product.dart';
 import 'expPage.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 
 class MarketPage extends StatefulWidget {
@@ -24,6 +25,10 @@ class MarketPage extends StatefulWidget {
 }
 
 class _MarketPageState extends State<MarketPage> {
+
+  final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(
+    functionName: 'readUser',
+  );
 
   int showCounter = 0;
   CardsSectionDraggable cardSection = new CardsSectionDraggable();
@@ -152,12 +157,14 @@ class _MarketPageState extends State<MarketPage> {
                   shape:  CircleBorder(),
                   padding: const EdgeInsets.all(0.0)
                 ),
-                // MaterialButton(
-                //   onPressed: () {
-                //     Navigator.push(context, MaterialPageRoute(builder: (context) => ExpPage()));
-                //   },
-                //   child: Text("ExpPage"),
-                // ),
+                MaterialButton(
+                  onPressed: () {
+                    callable.call();
+
+                    print('CF on.');
+                  },
+                  child: Text("ExpPage"),
+                ),
                 RawMaterialButton(
                   onPressed: () {
                     Scaffold.of(context).showSnackBar(

@@ -32,16 +32,15 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
   @override
   void initState(){
 
-    
     super.initState();
     
     for (cardsCounter = 0; cardsCounter <= 1; cardsCounter++){
       cards.add(ProfileCardDraggable(cardsCounter, "a", "b", "testOwner", "testOwnerName", null));
     }
 
-    Firestore.instance.collection('products').snapshots()
-    .listen((data) =>
-      data.documents.forEach((doc){
+    Firestore.instance.collection('products').where("owner", isGreaterThan: appUser.user.id).snapshots()
+    .listen((snapshot) =>
+      snapshot.documents.forEach((doc){
         category = doc["category"];
         description = doc["description"];
         imageUrl = doc["imageUrl"];
@@ -54,7 +53,20 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
       })
     );
 
-    
+    Firestore.instance.collection('products').where("owner", isLessThan: appUser.user.id).snapshots()
+    .listen((snapshot) =>
+      snapshot.documents.forEach((doc){
+        category = doc["category"];
+        description = doc["description"];
+        imageUrl = doc["imageUrl"];
+        owner = doc["owner"];
+        ownerName = doc["ownerName"];
+        cards.add(ProfileCardDraggable(cardsCounter, category, description, owner, ownerName, imageUrl));
+        cards.toSet().toList();
+        cardsCounter++;
+        print("Cards length: " + cards.length.toString());
+      })
+    );
   }
 
 
@@ -101,8 +113,6 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
     return Expanded(
       child: Stack(
         children: <Widget>[
-          
-          // Drag target row
           Row( 
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
@@ -111,7 +121,6 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
                 flex: 2,
                 child: Container(
                   color: Colors.grey.shade200,
-                  
                 )
               ),
               dragTargetRight()
@@ -123,9 +132,7 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
               child: cards[((showCounter + 1) < cardsCounter?(showCounter+1):showCounter)],
             )),
           ),
-          
           Align(
-            //alignment:  Alignment(0.0, 0.0),
             child:  Draggable(
               feedback:  SizedBox.fromSize(
                 size:  Size(MediaQuery.of(context).size.width * 1, MediaQuery.of(context).size.height * 0.8),
@@ -166,7 +173,6 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
   void changeCardsOrder(){
     setState((){
       if(showCounter < cardsCounter - 1){
-        
         ++showCounter;
         print(showCounter.toString() + " showCounter");
       } else return;
@@ -209,7 +215,7 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
         onAccept: (_){
           changeCardsOrder();
           print(cardsCounter.toString() + " cards counter");
-                    print("right");
+          print("right");
           print(cards[showCounter].owner);
           // firebase.db.collection("users").document(appUser.user.id).updateData({
           //     "matching": FieldValue.arrayUnion([cards[showCounter].owner])
@@ -218,6 +224,11 @@ class _CardsSectionState extends State<CardsSectionDraggable>{
           firebase.db.collection("users").document(appUser.user.id).collection("matching").add({
             "id": cards[showCounter].owner,
             "name": cards[showCounter].ownerName
+            }
+          );
+          firebase.db.collection("users").document(cards[showCounter].owner).collection("matching").add({
+            "id": appUser.user.id,
+            "name": appUser.user.displayName
             }
           );
           setState(() => dragOverTarget = false);
