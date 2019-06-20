@@ -15,7 +15,7 @@ class NotificationPage extends StatelessWidget {
 
     return StreamBuilder<QuerySnapshot>(
       // Interacts with Firestore (not CloudFunction)
-      stream: Firestore.instance.collection('users').document(appUser.user.id).collection("matching").snapshots(),
+      stream: Firestore.instance.collection('recProducts').snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           switch(snapshot.connectionState) {
             case ConnectionState.waiting: 
@@ -43,6 +43,10 @@ class NotificationPage extends StatelessWidget {
         }
     );
 }
+
+
+  
+  
 }
 
 // StreamBuilder<QuerySnapshot> _retrieveProducts() {

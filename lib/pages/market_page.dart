@@ -135,9 +135,7 @@ class _MarketPageState extends State<MarketPage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 RawMaterialButton(
-                  onPressed: () {
-                    
-                  },
+                  onPressed: () {},
                   child:  Icon(
                     Icons.cached,
                     color: Colors.grey[300],
@@ -147,7 +145,9 @@ class _MarketPageState extends State<MarketPage> {
                 RawMaterialButton(
                   fillColor:Color(0xFFcc805e),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductList()));
+                    Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => AddProductList())
+                      );
                   },
                   child: Icon(
                     Icons.add,
@@ -157,13 +157,11 @@ class _MarketPageState extends State<MarketPage> {
                   shape:  CircleBorder(),
                   padding: const EdgeInsets.all(0.0)
                 ),
-                MaterialButton(
+                RawMaterialButton(
                   onPressed: () {
-                    callable.call();
-
-                    print('CF on.');
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ExpPage()));
                   },
-                  child: Text("ExpPage"),
+                  child: Text("ExpPage") 
                 ),
                 RawMaterialButton(
                   onPressed: () {

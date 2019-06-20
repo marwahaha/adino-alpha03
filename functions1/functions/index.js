@@ -2,6 +2,8 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
+var d = new Date();
+
 const ContentBasedRecommender = require('content-based-recommender');
 const recommender = new ContentBasedRecommender({
   minScore: 0.0000000001,
@@ -30,26 +32,18 @@ const recommender = new ContentBasedRecommender({
 exports.getRecommendedList = functions.firestore
     .document('products/{productId}')
     .onCreate((snap, context) => {
-      // Get an object representing the document
-      // e.g. {'name': 'Marie', 'age': 66}
-
         let counter = 0;
         let recDoc = [];
         let dbDoc = [];
         let similarDocuments = [];
-
         const newValue = snap.data();
         recDoc.push({"id": counter, "content": newValue.itemString});
         counter++;
-
         const products = admin.firestore().collection('products');
-        
-        
         console.log("Function 'getRecommended' invoked.");
         products.get().
             then(snapshot => {
                 snapshot.forEach(doc => {
-                   // console.log(doc.id, '=>', doc.get('itemString'));
                     recDoc.push({"id": counter, "content": doc.get("itemString")});
                     counter++;
                 });
@@ -58,44 +52,48 @@ exports.getRecommendedList = functions.firestore
                 console.log('Error: ', err);
                 throw new Error("Profile doesn't exist");
             }).then(() => {
-                console.log("Im at recommender");
                 recommender.train(recDoc);
                 similarDocuments = recommender.getSimilarDocuments('0', 0, recDoc.length);
                 return null;
             }).catch(err => {console.log(err)})
             .then(() => {
                 console.log("Im array switch");
-
+                var c = 0;
                 for(var x = 0; x < similarDocuments.length; x++){
                     for(var y = 0; y < recDoc.length ; y++){
                         if(similarDocuments[x].id === recDoc[y].id){
                             dbDoc[x] = recDoc[y];
+                            dbDoc[x].id = c;
+                            c++;
                             console.log(dbDoc[x]);
                         }
                     }
                 }
-
-                //dbDoc = await whereId(similarDocuments, recDoc);
-                // dbDoc.forEach(x => {
-                //     console.log(x.id + " " + x.content);
-                // });
                 return null;
             }).catch(err => {
                 console.log(err);
             }).then(() => {
-                writeToDb(recProducts);
+                //console.log(dbDoc);
+                console.log("=============================================================");
+                dbDoc = toObject(dbDoc);
+                //console.log(dbDoc);
+                const recProducts = admin.firestore().collection('recProducts').doc('rec');
+                recProducts.set(dbDoc);
+                return null;
             }).catch(err => {
                 console.log(err);
             });
-        return null;
+        
+          return null;
+
     });
 
-    function writeToDb(rec){
-        const recProducts = admin.firestore().collection('recProducts').document();
-
-    }
-
-    
+    function toObject(arr) {
+        var rv = {};
+        for (var i = 0; i < arr.length; ++i)
+          if (arr[i] !== undefined) rv[i] = arr[i];
+        return rv;
+      }
 
 
 
